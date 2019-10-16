@@ -3,17 +3,20 @@ package domain;
 import entity.Address;
 import entity.Employee;
 import entity.Project;
-import org.hibernate.Session;
+import service.AddressService;
+import service.EmployeeService;
+import service.ProjectService;
 import utils.HibernateUtil;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class Domain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        session.beginTransaction();
+        AddressService addressService = new AddressService();
+        EmployeeService employeeService = new EmployeeService();
+        ProjectService projectService = new ProjectService();
 
         Address address = new Address();
         address.setCountry("DC");
@@ -29,7 +32,7 @@ public class Domain {
         employee.setLastname("Gordon");
 
         Calendar calendar = new GregorianCalendar();
-        calendar.set(1939,Calendar.MAY,1);
+        calendar.set(1939, Calendar.MAY, 1);
 
         employee.setBirthday(new Date(calendar.getTime().getTime()));
         employee.setAddress(address);
@@ -42,11 +45,10 @@ public class Domain {
         projects.add(project);
         employee.setProjects(projects);
 
-        session.save(address);
-        session.save(employee);
-        session.save(project);
+        addressService.add(address);
+        employeeService.add(employee);
+        projectService.add(project);
 
-        session.getTransaction().commit();
         HibernateUtil.shutdown();
     }
 }
